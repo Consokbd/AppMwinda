@@ -1,0 +1,83 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard Administrateur</h2>
+
+<div class="admin-stats">
+    <div class="admin-stat-card">
+        <h3>Total Utilisateurs</h3>
+        <div class="value">{{ users_count }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <h3>Total Projets</h3>
+        <div class="value">{{ projects_count }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <h3>Total Messages</h3>
+        <div class="value">{{ messages_count }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <h3>Total Rapports</h3>
+        <div class="value">{{ reports_count }}</div>
+    </div>
+</div>
+
+<h2 style="margin-top: 30px;">Derniers Messages</h2>
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>De</th>
+            <th>À</th>
+            <th>Message</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for message in recent_messages %}
+        <tr>
+            <td><strong>{{ message.sender.username }}</strong></td>
+            <td>{{ message.receiver.username }}</td>
+            <td>{{ message.content|truncatewords:10 }}</td>
+            <td>{{ message.created_at|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="text-align: center; color: #999;">Aucun message</td>
+        </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="admin-table-section">
+    <div class="admin-table-header">
+        <h3>Derniers Rapports</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Date</th>
+                <th>Travail Effectué</th>
+                <th>Problèmes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in recent_reports %}
+            <tr>
+                <td><strong>{{ report.user.username }}</strong></td>
+                <td>{{ report.date }}</td>
+                <td>{{ report.work_done|truncatewords:15 }}</td>
+                <td>{{ report.problems|truncatewords:10|default:"Aucun" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #999;">Aucun rapport</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

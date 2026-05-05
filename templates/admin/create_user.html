@@ -1,0 +1,94 @@
+ {% extends "admin/base.html" %}
+
+{% block title %}Créer un Utilisateur{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px;">
+    <a href="{% url 'admin_users' %}" style="color: #667eea; text-decoration: none; margin-bottom: 16px; display: inline-block; font-size: 14px;">← Retour à la liste</a>
+    
+    <h2>Créer un Nouvel Utilisateur</h2>
+    
+    {% if errors %}
+    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <h4 style="color: #991b1b; margin: 0 0 8px 0; font-size: 13px;">Erreurs:</h4>
+        <ul style="color: #7f1d1d; margin: 0; margin-left: 20px; font-size: 13px;">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    <div class="admin-form">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="admin-form-group">
+                <label for="username">Nom d'utilisateur *</label>
+                <input type="text" id="username" name="username" required value="{{ form_data.username|default:'' }}" placeholder="ex: jdupont">
+                <small style="color: #6b7280; font-size: 12px; margin-top: 4px;">Utilisé pour se connecter</small>
+            </div>
+            
+            <div class="admin-form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required value="{{ form_data.email|default:'' }}" placeholder="ex: jean@example.com">
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="first_name">Prénom</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ form_data.first_name|default:'' }}" placeholder="ex: Jean">
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="last_name">Nom</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ form_data.last_name|default:'' }}" placeholder="ex: Dupont">
+                </div>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="password">Mot de passe *</label>
+                    <input type="password" id="password" name="password" required placeholder="Mot de passe sécurisé">
+                    <small style="color: #6b7280; font-size: 12px; margin-top: 4px;">Minimum 6 caractères</small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="password_confirm">Confirmer le mot de passe *</label>
+                    <input type="password" id="password_confirm" name="password_confirm" required placeholder="Confirmez le mot de passe">
+                </div>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="role">Rôle</label>
+                    <select id="role" name="role">
+                        {% for value, label in role_choices %}
+                        <option value="{{ value }}" {% if form_data.role == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="direction">Direction</label>
+                    <select id="direction" name="direction">
+                        {% for value, label in direction_choices %}
+                        <option value="{{ value }}" {% if form_data.direction == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="admin-form-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                <input type="checkbox" id="is_admin" name="is_admin" {% if form_data.is_admin %}checked{% endif %} style="width: 16px; height: 16px; cursor: pointer;">
+                <label for="is_admin" style="margin-bottom: 0; cursor: pointer; font-size: 14px;">Rendre administrateur</label>
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="admin-btn admin-btn-primary" style="flex: 1; padding: 12px; font-size: 14px;">Créer l'utilisateur</button>
+                <a href="{% url 'admin_users' %}" class="admin-btn admin-btn-secondary" style="flex: 1; padding: 12px; font-size: 14px; text-align: center;">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

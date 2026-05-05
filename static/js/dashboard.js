@@ -1,0 +1,281 @@
+function getCookie(name) {
+    const cookies = document.cookie ? document.cookie.split(";") : [];
+    for (let i = 0; i < cookies.length; i += 1) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + "=")) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+        }
+    }
+    return "";
+}
+
+function formatSeconds(totalSeconds) {
+    const safeSeconds = Math.max(totalSeconds, 0);
+    const hours = Math.floor(safeSeconds / 3600);
+    const minutes = Math.floor((safeSeconds % 3600) / 60);
+    const seconds = safeSeconds % 60;
+    return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
+}
+
+function parseTimerValue(value) {
+    if (!value || typeof value !== "string") {
+        return 0;
+    }
+    const parts = value.split(":").map((part) => parseInt(part, 10));
+    if (parts.length !== 3 || parts.some((part) => Number.isNaN(part))) {
+        return 0;
+    }
+    return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+}
+
+function updateNotificationBadges() {
+    const messageBadge = document.querySelector('a[href*="messaging"] .notification-badge');
+    const projectBadge = document.querySelector('a[href*="projects_list"] .notification-badge');
+    const unreadMessages = parseInt(localStorage.getItem("unread_messages_count") || "0", 10);
+    const newProjectAssignments = parseInt(localStorage.getItem("new_project_assignments") || "0", 10);
+
+    if (messageBadge) {
+        if (unreadMessages > 0) {
+            messageBadge.textContent = unreadMessages;
+            messageBadge.classList.add("visible");
+        } else {
+            messageBadge.classList.remove("visible");
+        }
+    }
+
+    if (projectBadge) {
+        if (newProjectAssignments > 0) {
+            projectBadge.textContent = newProjectAssignments;
+            projectBadge.classList.add("visible");
+        } else {
+            projectBadge.classList.remove("visible");
+        }
+    }
+}
+
+function updateTaskProgress() {
+    const taskItems = Array.from(document.querySelectorAll(".task-item"));
+    const progressCircle = document.querySelector(".progress-circle");
+    const progressValue = document.querySelector(".progress-value");
+    let completedCount = 0;
+
+    taskItems.forEach((taskItem) => {
+        const switchEl = taskItem.querySelector(".toggle-switch");
+        const isCompleted = switchEl && switchEl.classList.contains("active");
+        taskItem.classList.toggle("completed", isCompleted);
+        taskItem.classList.remove("next");
+        if (isCompleted) {
+            completedCount += 1;
+        }
+    });
+
+    const nextTask = taskItems.find((taskItem) => !taskItem.classList.contains("completed") && !taskItem.classList.contains("hidden-task"));
+    if (nextTask) {
+        nextTask.classList.add("next");
+    }
+
+    const percent = taskItems.length ? Math.round((completedCount / taskItems.length) * 100) : 0;
+    if (progressCircle) {
+        progressCircle.style.setProperty("--progress", percent);
+    }
+    if (progressValue) {
+        progressValue.textContent = percent + "%";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const config = window.dashboardTimerConfig || {};
+    const menuToggle = document.querySelector(".menu-toggle");
+    const sidebar = document.querySelector(".sidebar-panel");
+    const pauseButton = document.querySelector(".pause-button");
+    const taskTimerNode = document.querySelector("#task-timer-row .timer-value");
+    const workTimerNode = document.querySelector("#work-timer-row .timer-value");
+    const pauseTimerNode = document.querySelector("#pause-timer-row .timer-value");
+    const taskItems = Array.from(document.querySelectorAll(".task-item"));
+
+    const state = {
+        activeTaskLabel: config.activeTaskLabel || "",
+        activeTaskStartedAt: config.activeTaskStartedAt || "",
+        activePauseStartedAt: config.activePauseStartedAt || "",
+        activeWorkStartedAt: config.activeWorkStartedAt || "",
+        isPauseRunning: config.isPauseRunning === true || config.isPauseRunning === "true",
+        isWorkRunning: config.isWorkRunning === true || config.isWorkRunning === "true",
+        baseTaskSeconds: parseTimerValue(taskTimerNode ? taskTimerNode.textContent : "00:00:00"),
+        baseWorkSeconds: parseTimerValue(workTimerNode ? workTimerNode.textContent : "00:00:00"),
+        basePauseSeconds: parseTimerValue(pauseTimerNode ? pauseTimerNode.textContent : "00:00:00"),
+    };
+
+    function revealNextTaskBatch() {
+        const visibleTasks = taskItems.filter((item) => !item.classList.contains("hidden-task"));
+        const visibleCompleted = visibleTasks.filter((item) =>
+            item.querySelector(".toggle-switch")?.classList.contains("active")
+        ).length;
+        if (visibleTasks.length === 0 || visibleCompleted !== visibleTasks.length) {
+            return;
+        }
+
+        visibleTasks.forEach((item) => {
+            item.classList.add("hidden-task");
+            item.classList.add("archived-task");
+        });
+
+        const nextHiddenTasks = taskItems
+            .filter((item) => item.classList.contains("hidden-task") && !item.classList.contains("archived-task"))
+            .slice(0, 3);
+        nextHiddenTasks.forEach((item) => item.classList.remove("hidden-task"));
+        updateTaskProgress();
+    }
+
+    function elapsedSince(isoDate) {
+        if (!isoDate) {
+            return 0;
+        }
+        const started = new Date(isoDate);
+        if (Number.isNaN(started.getTime())) {
+            return 0;
+        }
+        return Math.max(Math.floor((Date.now() - started.getTime()) / 1000), 0);
+    }
+
+    function refreshTimerRows() {
+        const taskSeconds = state.activeTaskStartedAt ? elapsedSince(state.activeTaskStartedAt) : 0;
+        const workSeconds = state.baseWorkSeconds + (state.isWorkRunning && state.activeWorkStartedAt ? elapsedSince(state.activeWorkStartedAt) : 0);
+        const pauseSeconds = state.basePauseSeconds + (state.isPauseRunning && state.activePauseStartedAt ? elapsedSince(state.activePauseStartedAt) : 0);
+
+        if (taskTimerNode) {
+            taskTimerNode.textContent = formatSeconds(taskSeconds);
+        }
+        if (workTimerNode) {
+            workTimerNode.textContent = formatSeconds(workSeconds);
+        }
+        if (pauseTimerNode) {
+            pauseTimerNode.textContent = formatSeconds(pauseSeconds);
+        }
+    }
+
+    function updatePauseButtonLabel() {
+        if (!pauseButton) {
+            return;
+        }
+        pauseButton.textContent = state.isPauseRunning ? "FIN PAUSE" : "PAUSE";
+    }
+
+    function setActiveTaskVisual(label) {
+        taskItems.forEach((taskItem) => {
+            taskItem.classList.toggle("active", taskItem.dataset.taskLabel === label);
+        });
+    }
+
+    async function postTimer(url, payload) {
+        const csrfToken = config.csrfToken || getCookie("csrftoken");
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+            },
+            body: new URLSearchParams(payload).toString(),
+        });
+        if (!response.ok) {
+            throw new Error("Timer API error");
+        }
+        return response.json();
+    }
+
+    taskItems.forEach((taskItem) => {
+        taskItem.addEventListener("click", async function (event) {
+            const clickedSwitch = event.target.classList.contains("toggle-switch");
+            const taskLabel = taskItem.dataset.taskLabel || "";
+            if (!taskLabel) {
+                return;
+            }
+
+            if (clickedSwitch) {
+                const switchEl = event.target;
+                if (switchEl.classList.contains("active")) {
+                    return;
+                }
+                try {
+                    await postTimer(config.completeTaskUrl, { task_label: taskLabel });
+                    switchEl.classList.add("active");
+                    if (state.activeTaskLabel === taskLabel) {
+                        state.activeTaskLabel = "";
+                        state.activeTaskStartedAt = "";
+                    }
+                    setActiveTaskVisual("");
+                    updateTaskProgress();
+                    revealNextTaskBatch();
+                } catch (error) {
+                    console.error(error);
+                }
+                return;
+            }
+
+            if (taskItem.querySelector(".toggle-switch")?.classList.contains("active")) {
+                return;
+            }
+
+            try {
+                await postTimer(config.startTaskUrl, { task_label: taskLabel });
+                state.activeTaskLabel = taskLabel;
+                state.activeTaskStartedAt = new Date().toISOString();
+                state.baseTaskSeconds = 0;
+                state.isPauseRunning = false;
+                state.activePauseStartedAt = "";
+                setActiveTaskVisual(taskLabel);
+                updatePauseButtonLabel();
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+
+    if (pauseButton) {
+        pauseButton.addEventListener("click", async function () {
+            try {
+                const result = await postTimer(config.togglePauseUrl, {});
+                if (result.is_pause_running) {
+                    state.isPauseRunning = true;
+                    state.activePauseStartedAt = new Date().toISOString();
+                    if (state.activeTaskStartedAt) {
+                        state.baseTaskSeconds += elapsedSince(state.activeTaskStartedAt);
+                        state.activeTaskStartedAt = "";
+                        state.activeTaskLabel = "";
+                        setActiveTaskVisual("");
+                    }
+                } else {
+                    state.isPauseRunning = false;
+                    state.basePauseSeconds += elapsedSince(state.activePauseStartedAt);
+                    state.activePauseStartedAt = "";
+                }
+                updatePauseButtonLabel();
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("open");
+        });
+        document.addEventListener("click", function (event) {
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+    }
+
+    updatePauseButtonLabel();
+    if (state.activeTaskLabel) {
+        setActiveTaskVisual(state.activeTaskLabel);
+    }
+    const progressCircle = document.querySelector(".progress-circle");
+    if (progressCircle) {
+        progressCircle.style.setProperty("--progress", 0);
+    }
+    updateTaskProgress();
+    updateNotificationBadges();
+    refreshTimerRows();
+    window.setInterval(refreshTimerRows, 1000);
+});

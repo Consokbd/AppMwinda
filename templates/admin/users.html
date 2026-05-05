@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="admin-header-row">
+    <h2>Gestion des Utilisateurs ({{ users.count }})</h2>
+    <a href="{% url 'admin_create_user' %}" class="admin-btn admin-btn-primary">+ Créer un utilisateur</a>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Nom Complet</th>
+            <th>Rôle</th>
+            <th>Inscrit le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td><strong>{{ user.username }}</strong></td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.get_full_name|default:"-" }}</td>
+            <td>
+                {% if user.is_superuser %}
+                    <span class="admin-badge admin-badge-danger">Admin</span>
+                {% elif user.role == 'directeur' %}
+                    <span class="admin-badge admin-badge-warning">Directeur</span>
+                {% else %}
+                    <span class="admin-badge admin-badge-info">Agent</span>
+                {% endif %}
+            </td>
+            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+            <td>
+                <div class="action-cell">
+                    <form method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        
+                        {% if not user.is_superuser %}
+                            <button type="submit" name="action" value="make_admin" class="admin-btn admin-btn-secondary" title="Promouvoir en administrateur">Rendre Admin</button>
+                        {% else %}
+                            <button type="submit" name="action" value="remove_admin" class="admin-btn admin-btn-secondary" title="Retirer les droits d'administrateur">Retirer Admin</button>
+                        {% endif %}
+                        
+                        {% if user.id != request.user.id %}
+                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm" style="padding: 6px 12px; font-size: 12px;" onclick="return confirm('Êtes-vous sûr?')">Supprimer</button>
+                        {% endif %}
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #999;">Aucun utilisateur</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

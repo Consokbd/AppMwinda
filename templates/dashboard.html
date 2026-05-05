@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Dashboard - AppMwinda</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header class="app-header">
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <div class="brand-mark">
+            <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
+        </div>
+    </header>
+
+    <div class="app-shell">
+        <!-- Sidebar à gauche -->
+        <aside class="sidebar-panel">
+            <div class="sidebar-brand">
+                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="{% url 'messaging' %}" class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    Messages
+                    <span class="notification-badge">2</span>
+                </a>
+                <a href="{% url 'projects_list' %}" class="nav-item">
+                    <span class="nav-icon">📁</span>
+                    Projets
+                    <span class="notification-badge">3</span>
+                </a>
+                <a href="{% url 'reports_list' %}" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    Rapports
+                </a>
+                {% if is_admin %}
+                <a href="{% url 'users_list' %}" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    Agents
+                </a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="nav-item logout">
+                    <span class="nav-icon">🚪</span>
+                    Déconnexion
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenu principal du dashboard -->
+        <main class="dashboard-content">
+            <!-- Contenu principal du dashboard -->
+            <section class="content-grid">
+                <!-- Colonne gauche : profil et progression -->
+                <div class="left-column">
+                    <div class="profile-card">
+                        <div class="avatar">{{ user_first_letter }}</div>
+                        <div class="profile-info">
+                            <h1>{{ full_name }}</h1>
+                            <p>{{ user_role_display }}</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-card">
+                        <div class="progress-inner">
+                            <div class="progress-circle" style="--progress:0;"></div>
+                            <div class="progress-value">{{ profile_progress }}%</div>
+                        </div>
+                        <p class="progress-label">Evolution du projet en cours</p>
+                    </div>
+                </div>
+
+                <!-- Colonne centrale : carte projet -->
+                <div class="center-column">
+                    <!-- Carte projet au centre -->
+                    <div class="project-card">
+                        <div class="project-icon project-icon-main">⦿</div>
+                        <h2>{{ current_project.title }}</h2>
+                        <p>{{ current_project.description }}</p>
+                        {% if current_project.status_display %}
+                        <p><strong>Statut:</strong> {{ current_project.status_display }}</p>
+                        {% endif %}
+                        <a href="{% url 'projects_list' %}" class="btn-open">{{ current_project.button_text }}</a>
+                    </div>
+                </div>
+
+                <!-- Colonne droite : tâches et timer -->
+                <div class="right-column">
+                    <!-- Bloc tâches et timer à droite -->
+                    <div class="tasks-card">
+                        <div class="task-card-header">
+                            <div class="task-card-icon">⏱</div>
+                            <h2>TÂCHES DU JOUR</h2>
+                        </div>
+                        <div class="task-list">
+                            {% for task in tasks %}
+                            <div class="task-item {% if task.active %}active{% endif %} {% if not task.visible %}hidden-task{% endif %}" data-task-label="{{ task.label }}">
+                                <span>{{ task.label }}</span>
+                                <span class="toggle-switch {% if task.active %}active{% endif %}"></span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="pause-button">PAUSE</button>
+                    </div>
+
+                    <div class="timer-card">
+                        <!-- Bloc timer / statistiques temps -->
+                        {% for stat in time_stats %}
+                        <div class="timer-row {% if stat.highlight %}green{% endif %}" {% if forloop.counter == 1 %}id="task-timer-row"{% elif forloop.counter == 2 %}id="work-timer-row"{% elif forloop.counter == 3 %}id="pause-timer-row"{% endif %}>
+                            <span>{{ stat.label }}</span>
+                            <span class="timer-value">{{ stat.value }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize notification badges from Django context
+        localStorage.setItem('unread_messages_count', '{{ unread_messages_count }}');
+        localStorage.setItem('new_project_assignments', '{{ new_project_assignments }}');
+        window.dashboardTimerConfig = {
+            startTaskUrl: "{% url 'start_task_timer' %}",
+            completeTaskUrl: "{% url 'complete_task_timer' %}",
+            togglePauseUrl: "{% url 'toggle_pause_timer' %}",
+            csrfToken: "{{ csrf_token }}",
+            activeTaskLabel: "{{ timer_state.active_task_label|escapejs }}",
+            activeTaskStartedAt: "{{ timer_state.active_task_started_at }}",
+            activePauseStartedAt: "{{ timer_state.active_pause_started_at }}",
+            activeWorkStartedAt: "{{ timer_state.active_work_started_at }}",
+            isPauseRunning: "{{ timer_state.is_pause_running|yesno:'true,false' }}",
+            isWorkRunning: "{{ timer_state.is_work_running|yesno:'true,false' }}"
+        };
+    </script>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

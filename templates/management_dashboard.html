@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Dashboard Management - AppMwinda</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <style>
+        .management-page { padding: 24px 28px; }
+        .header { margin-bottom: 22px; }
+        .header h1 { margin: 0 0 6px 0; color: #111827; }
+        .header p { margin: 0; color: #6b7280; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .stat-card h3 {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+        .stat-card .value {
+            font-size: 30px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .value.pending { color: #92400e; }
+        .value.progress { color: #1e40af; }
+        .value.done { color: #166534; }
+        .panel {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .progress-wrap { margin-bottom: 16px; }
+        .progress-bar {
+            height: 16px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+        .projects-table { width: 100%; border-collapse: collapse; }
+        .projects-table th, .projects-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: left;
+            font-size: 14px;
+        }
+        .projects-table th { color: #6b7280; font-size: 12px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <div class="brand-mark">
+            <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
+        </div>
+    </header>
+
+    <div class="app-shell">
+        <aside class="sidebar-panel">
+            <div class="sidebar-brand">
+                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="nav-item active"><span class="nav-icon">📊</span>Dashboard</a>
+                <a href="{% url 'messaging' %}" class="nav-item"><span class="nav-icon">💬</span>Messages</a>
+                <a href="{% url 'projects_list' %}" class="nav-item"><span class="nav-icon">📁</span>Projets</a>
+                <a href="{% url 'reports_list' %}" class="nav-item"><span class="nav-icon">📋</span>Rapports</a>
+                <a href="{% url 'users_list' %}" class="nav-item"><span class="nav-icon">👥</span>Agents</a>
+                <a href="{% url 'logout' %}" class="nav-item logout"><span class="nav-icon">🚪</span>Déconnexion</a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="management-page">
+                <div class="header">
+                    <h1>Dashboard Direction</h1>
+                    <p>Suivi global de l'évolution des projets</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Projets en attente</h3>
+                        <div class="value pending">{{ project_status_counts.pending }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Projets en cours</h3>
+                        <div class="value progress">{{ project_status_counts.progress }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Projets terminés</h3>
+                        <div class="value done">{{ project_status_counts.done }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total projets</h3>
+                        <div class="value">{{ total_projects }}</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="progress-wrap">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong>Taux d'achèvement global</strong>
+                            <span>{{ progress_ratio }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ progress_ratio }}%;"></div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 14px 0;">Projets récents</h3>
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Projet</th>
+                                <th>Manager</th>
+                                <th>Début</th>
+                                <th>Fin</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in recent_projects %}
+                            <tr>
+                                <td>{{ project.name }}</td>
+                                <td>{{ project.manager.username }}</td>
+                                <td>{{ project.start_date }}</td>
+                                <td>{{ project.end_date }}</td>
+                                <td>{{ project.get_status_display }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5">Aucun projet enregistré.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

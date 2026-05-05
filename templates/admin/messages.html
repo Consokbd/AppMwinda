@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">Messages entre utilisateurs</h2>
+    <form method="GET" style="display: flex; gap: 8px; align-items: center;">
+        <select name="user_id" style="padding: 8px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 13px;">
+            <option value="">Tous les utilisateurs</option>
+            {% for user in users %}
+            <option value="{{ user.id }}" {% if selected_user|add:"0" == user.id %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="admin-btn admin-btn-primary">Filtrer</button>
+    </form>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>De</th>
+            <th>À</th>
+            <th>Message</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for message in messages %}
+        <tr>
+            <td><strong>{{ message.sender.username }}</strong></td>
+            <td><strong>{{ message.receiver.username }}</strong></td>
+            <td>{{ message.content|truncatewords:20 }}</td>
+            <td>{{ message.created_at|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="text-align: center; color: #999;">Aucun message</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

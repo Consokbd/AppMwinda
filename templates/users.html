@@ -1,0 +1,449 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Agents - AppMwinda</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <style>
+        .users-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .users-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table thead {
+            background: #f3f4f6;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .users-table th {
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .users-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fde047;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #111827;
+            font-size: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info-text h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .user-info-text p {
+            margin: 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .role-admin {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .role-directeur {
+            background: #dbeafe;
+            color: #0c4a6e;
+        }
+
+        .role-agent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-active {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .status-inactive {
+            background: #d1d5db;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #0c4a6e;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .btn-create {
+            padding: 10px 16px;
+            background: #fde047;
+            color: #111827;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-create:hover {
+            background: #fcd34d;
+            transform: translateY(-2px);
+        }
+
+        .create-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .create-form.visible {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #fde047;
+            box-shadow: 0 0 0 3px rgba(253, 224, 71, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .form-actions button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: #16a34a;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 900px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .users-table {
+                font-size: 13px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" style="height: 32px; width: auto;">
+    </header>
+
+    <div class="app-shell">
+        <aside class="sidebar-panel">
+            <div class="sidebar-brand">
+                <img src="{% static 'images/logo_agence_noir.png' %}" alt="Logo" style="height: 28px; width: auto;">
+                <span>AppMwinda</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{% url 'dashboard' %}" class="nav-item">Accueil</a>
+                <a href="{% url 'messaging' %}" class="nav-item">Messages</a>
+                <a href="{% url 'projects_list' %}" class="nav-item">Projets</a>
+                <a href="{% url 'reports_list' %}" class="nav-item">Rapports</a>
+                {% if is_management %}
+                    <a href="{% url 'users_list' %}" class="nav-item active">Agents</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="nav-item logout">Déconnexion</a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="content-wrapper">
+                <div class="section-header">
+                    <h2>Gestion des Agents</h2>
+                    {% if is_admin %}
+                        <button class="btn-create" id="toggleCreateForm">+ Créer un agent</button>
+                    {% endif %}
+                </div>
+
+                {% if is_admin %}
+                    <div class="create-form" id="createUserForm">
+                        <h3 style="margin-top: 0; color: #111827;">Créer un nouvel utilisateur</h3>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nom d'utilisateur</label>
+                                    <input type="text" name="username" required placeholder="ex: jdupont">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" required placeholder="ex: jean@example.com">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Prénom</label>
+                                    <input type="text" name="first_name" placeholder="ex: Jean">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" name="last_name" placeholder="ex: Dupont">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Mot de passe</label>
+                                    <input type="password" name="password" required placeholder="Mot de passe sécurisé">
+                                </div>
+                                <div class="form-group">
+                                    <label>Rôle</label>
+                                    <select name="role" required>
+                                        <option value="">-- Sélectionner un rôle --</option>
+                                        <option value="admin">Administrateur</option>
+                                        <option value="directeur">Directeur</option>
+                                        <option value="agent">Agent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-cancel" onclick="toggleCreateForm()">Annuler</button>
+                                <button type="submit" class="btn-submit">Créer l'utilisateur</button>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+
+                <div class="users-container">
+                    {% if users %}
+                        <div class="users-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Agent</th>
+                                        <th>Email</th>
+                                        <th>Rôle</th>
+                                        <th>Statut</th>
+                                        <th>Performance</th>
+                                        <th>T. exécution tâches</th>
+                                        <th>Temps travail</th>
+                                        <th>Temps pause</th>
+                                        {% if is_admin %}<th>Actions</th>{% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>
+                                                <div class="user-info">
+                                                    <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                                                    <div class="user-info-text">
+                                                        <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                                                        <p>@{{ user.username }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ user.email }}</td>
+                                            <td>
+                                                <span class="role-badge role-{{ user.role }}">
+                                                    {{ user.get_role_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 6px;">
+                                                    <div class="status-active {% if not user.is_active %}status-inactive{% endif %}"></div>
+                                                    <span style="font-size: 13px;">{% if user.is_active %}Actif{% else %}Inactif{% endif %}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ user.performance_score }}%</td>
+                                            <td>{{ user.avg_task_time }}</td>
+                                            <td>{{ user.work_time_total }}</td>
+                                            <td>{{ user.pause_time_total }}</td>
+                                            {% if is_admin %}
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn-sm btn-edit">Modifier</button>
+                                                        <button class="btn-sm btn-delete" onclick="if(confirm('Êtes-vous sûr?')) { window.location.href='#'; }">Supprimer</button>
+                                                    </div>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <p>Aucun utilisateur trouvé</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script>
+        function toggleCreateForm() {
+            const form = document.getElementById('createUserForm');
+            form.classList.toggle('visible');
+        }
+
+        const createBtn = document.getElementById('toggleCreateForm');
+        if (createBtn) {
+            createBtn.addEventListener('click', toggleCreateForm);
+        }
+    </script>
+</body>
+</html>

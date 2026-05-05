@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Rapports{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">Rapports Quotidiens</h2>
+    <form method="GET" style="display: flex; gap: 8px; align-items: center;">
+        <select name="user_id" style="padding: 8px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 13px;">
+            <option value="">Tous les utilisateurs</option>
+            {% for user in users %}
+            <option value="{{ user.id }}" {% if selected_user|add:"0" == user.id %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="admin-btn admin-btn-primary">Filtrer</button>
+    </form>
+</div>
+
+{% for report in reports %}
+<div style="background: #f9fafb; border-left: 4px solid #fde047; padding: 16px; margin-bottom: 16px; border-radius: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+            <strong style="font-size: 15px; color: #111827;">{{ report.user.username }}</strong>
+            <span style="color: #6b7280; font-size: 13px; margin-left: 8px;">{{ report.date }}</span>
+        </div>
+        <span style="color: #9ca3af; font-size: 12px;">{{ report.created_at|date:"d/m/Y H:i" }}</span>
+    </div>
+    
+    <div style="margin-bottom: 10px;">
+        <h4 style="color: #22c55e; font-size: 13px; font-weight: 600; margin: 0 0 6px 0;">Travail effectué</h4>
+        <p style="color: #4b5563; line-height: 1.5; margin: 0;">{{ report.work_done }}</p>
+    </div>
+    
+    {% if report.problems %}
+    <div style="margin-bottom: 10px;">
+        <h4 style="color: #ef4444; font-size: 13px; font-weight: 600; margin: 0 0 6px 0;">Problèmes</h4>
+        <p style="color: #4b5563; line-height: 1.5; margin: 0;">{{ report.problems }}</p>
+    </div>
+    {% endif %}
+    
+    <div>
+        <h4 style="color: #667eea; font-size: 13px; font-weight: 600; margin: 0 0 6px 0;">Objectifs</h4>
+        <p style="color: #4b5563; line-height: 1.5; margin: 0;">{{ report.objectives }}</p>
+    </div>
+</div>
+{% empty %}
+<div class="admin-empty-state">
+    <p>Aucun rapport trouvé</p>
+        <p>Aucun rapport</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
