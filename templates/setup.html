@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Create Admin User</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .setup-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .setup-header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .setup-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .errors {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .errors ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .errors li {
+            color: #c33;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .errors li:last-child {
+            margin-bottom: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .setup-container {
+                padding: 30px 20px;
+            }
+
+            .setup-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1>🚀 Initial Setup</h1>
+            <p>Create your first admin account</p>
+        </div>
+
+        {% if errors %}
+            <div class="errors">
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="info-box">
+            <strong>First time setup:</strong> Create your admin account to access the application and manage users.
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ form_data.username }}" placeholder="e.g. admin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ form_data.email }}" placeholder="admin@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Min. 6 characters" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirm">Confirm Password</label>
+                <input type="password" id="password_confirm" name="password_confirm" placeholder="Repeat password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Admin Account</button>
+        </form>
+    </div>
+</body>
+</html>

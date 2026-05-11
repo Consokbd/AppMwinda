@@ -19,9 +19,11 @@ from django.urls import path, include
 
 from projects.views import dashboard, admin_dashboard, admin_users, admin_projects, admin_messages, admin_reports, admin_create_user
 from users.views import login_view, logout_view
+from users.setup import setup_view
 
 urlpatterns = [
     path('admin/django/', admin.site.urls),
+    path('setup/', setup_view, name='setup'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('', dashboard, name='dashboard'),
