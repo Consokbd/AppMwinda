@@ -17,7 +17,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,appmwinda.onrender.com'
+    'localhost,127.0.0.1,appmwinda.onrender.com,testserver'
 ).split(',')
 
 CSRF_TRUSTED_ORIGINS = [
@@ -146,3 +146,4 @@ if not DEBUG:
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
+AUTH_USER_MODEL = 'users.User'
