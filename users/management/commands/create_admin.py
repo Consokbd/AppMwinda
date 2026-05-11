@@ -21,32 +21,43 @@ class Command(BaseCommand):
         role = options['role']
         direction = options['direction']
 
-        # Check if user exists
-        user = User.objects.filter(username=username).first()
-        
-        if user:
-            # Update existing user
-            user.email = email
-            user.is_staff = True
-            user.is_superuser = True
-            user.role = role
-            user.direction = direction
-            user.set_password(password)
-            user.save()
-            self.stdout.write(self.style.SUCCESS('[OK] Updated admin user "{}"'.format(username)))
-        else:
-            # Create new user
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password,
-                role=role,
-                direction=direction,
-            )
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
-            self.stdout.write(self.style.SUCCESS('[OK] Created admin user "{}"'.format(username)))
+        try:
+            # Check if user exists
+            user = User.objects.filter(username=username).first()
+            
+            if user:
+                # Update existing user - make sure password is set correctly
+                user.email = email
+                user.is_staff = True
+                user.is_superuser = True
+                user.role = role
+                user.direction = direction
+                user.set_password(password)  # Use set_password to hash the password
+                user.save()
+                self.stdout.write(self.style.SUCCESS('[OK] Updated admin user "{}"'.format(username)))
+            else:
+                # Create new user
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password,
+                    role=role,
+                    direction=direction,
+                )
+                user.is_staff = True
+                user.is_superuser = True
+                user.save()
+                self.stdout.write(self.style.SUCCESS('[OK] Created admin user "{}"'.format(username)))
+            
+            # Verify password works
+            from django.contrib.auth import authenticate
+            test_auth = authenticate(username=username, password=password)
+            if test_auth:
+                self.stdout.write(self.style.SUCCESS('[OK] Password verified - authentication works'))
+            else:
+                self.stdout.write(self.style.WARNING('[WARNING] Password verification failed'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR('[ERROR] Failed to create admin: {}'.format(str(e))))
 
         self.stdout.write(self.style.SUCCESS('\n[OK] Admin credentials:'))
         self.stdout.write('  Username: {}'.format(username))

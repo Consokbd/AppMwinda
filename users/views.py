@@ -18,8 +18,8 @@ def _format_seconds(total_seconds):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "").strip()
         
         user = authenticate(request, username=username, password=password)
         
