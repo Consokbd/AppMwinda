@@ -11,7 +11,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        fromSecret: allowed_hosts
+        value: appmwinda.onrender.com,localhost,127.0.0.1
     databases:
       - name: appmwinda-db
         databaseName: appmwinda

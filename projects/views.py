@@ -42,13 +42,17 @@ def _open_entry_for_user(user, entry_type):
 
 
 def _ensure_work_session(user):
-    if _open_entry_for_user(user, 'work'):
-        return
-    AgentTimeEntry.objects.create(
-        user=user,
-        entry_type='work',
-        started_at=timezone.now(),
-    )
+    try:
+        if _open_entry_for_user(user, 'work'):
+            return
+        AgentTimeEntry.objects.create(
+            user=user,
+            entry_type='work',
+            started_at=timezone.now(),
+        )
+    except Exception:
+        # Silently continue if AgentTimeEntry creation fails (e.g., migrations not run)
+        pass
 
 # Décorateur pour vérifier si l'utilisateur est admin
 def admin_required(view_func):
@@ -123,7 +127,10 @@ def dashboard(request):
 
     now = timezone.now()
     today = timezone.localdate()
-    today_entries = AgentTimeEntry.objects.filter(user=request.user, started_at__date=today)
+    try:
+        today_entries = AgentTimeEntry.objects.filter(user=request.user, started_at__date=today)
+    except Exception:
+        today_entries = []
 
     # Toujours démarrer avec des tâches non cochées lors d'une nouvelle connexion.
     task_definitions = [

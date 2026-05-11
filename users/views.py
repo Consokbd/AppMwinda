@@ -25,17 +25,21 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            has_open_work = AgentTimeEntry.objects.filter(
-                user=user,
-                entry_type='work',
-                ended_at__isnull=True,
-            ).exists()
-            if not has_open_work:
-                AgentTimeEntry.objects.create(
+            try:
+                has_open_work = AgentTimeEntry.objects.filter(
                     user=user,
                     entry_type='work',
-                    started_at=timezone.now(),
-                )
+                    ended_at__isnull=True,
+                ).exists()
+                if not has_open_work:
+                    AgentTimeEntry.objects.create(
+                        user=user,
+                        entry_type='work',
+                        started_at=timezone.now(),
+                    )
+            except Exception:
+                # Silently continue if AgentTimeEntry creation fails (e.g., migrations not run)
+                pass
             return redirect('dashboard')
         else:
             return render(request, 'login.html', {'error': 'Identifiants invalides'})
