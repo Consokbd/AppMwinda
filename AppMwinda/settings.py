@@ -15,13 +15,28 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,appmwinda.onrender.com,testserver'
-).split(',')
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS',
+        'localhost,127.0.0.1,appmwinda.onrender.com,testserver'
+    ).split(',')
+    if host.strip()
+]
+
+default_csrf_origins = ','.join(
+    f'https://{host}'
+    for host in ALLOWED_HOSTS
+    if host not in {'localhost', '127.0.0.1', 'testserver'}
+)
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://appmwinda.onrender.com'
+    origin.strip()
+    for origin in os.environ.get(
+        'CSRF_TRUSTED_ORIGINS',
+        default_csrf_origins
+    ).split(',')
+    if origin.strip()
 ]
 
 # ========================
