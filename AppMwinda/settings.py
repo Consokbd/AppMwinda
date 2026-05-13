@@ -19,16 +19,25 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         'ALLOWED_HOSTS',
-        'localhost,127.0.0.1,appmwinda.onrender.com,testserver'
+        'localhost,127.0.0.1,appmwinda.onrender.com,.onrender.com,testserver'
     ).split(',')
     if host.strip()
 ]
 
-default_csrf_origins = ','.join(
-    f'https://{host}'
-    for host in ALLOWED_HOSTS
-    if host not in {'localhost', '127.0.0.1', 'testserver'}
-)
+render_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_hostname)
+
+csrf_origins = []
+for host in ALLOWED_HOSTS:
+    if host in {'localhost', '127.0.0.1', 'testserver'}:
+        continue
+    if host.startswith('.'):
+        csrf_origins.append(f'https://*{host}')
+    else:
+        csrf_origins.append(f'https://{host}')
+
+default_csrf_origins = ','.join(csrf_origins)
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
