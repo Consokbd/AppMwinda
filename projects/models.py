@@ -58,3 +58,25 @@ class AgentTimeEntry(models.Model):
     def __str__(self):
         suffix = f" - {self.task_label}" if self.task_label else ""
         return f"{self.user.username} | {self.entry_type}{suffix}"
+
+
+class ProjectAssignmentNotification(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='project_assignment_notifications',
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='assignment_notifications',
+    )
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'project')
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f"{self.user.username} assigned to {self.project.name}"

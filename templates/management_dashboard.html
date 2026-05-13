@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,32 +66,20 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
     </header>
 
     <div class="app-shell">
-        <aside class="sidebar-panel">
-            <div class="sidebar-brand">
-                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="{% url 'dashboard' %}" class="nav-item active"><span class="nav-icon">📊</span>Dashboard</a>
-                <a href="{% url 'messaging' %}" class="nav-item"><span class="nav-icon">💬</span>Messages</a>
-                <a href="{% url 'projects_list' %}" class="nav-item"><span class="nav-icon">📁</span>Projets</a>
-                <a href="{% url 'reports_list' %}" class="nav-item"><span class="nav-icon">📋</span>Rapports</a>
-                <a href="{% url 'users_list' %}" class="nav-item"><span class="nav-icon">👥</span>Agents</a>
-                <a href="{% url 'logout' %}" class="nav-item logout"><span class="nav-icon">🚪</span>Déconnexion</a>
-            </nav>
-        </aside>
+        {% include "partials/sidebar.html" %}
 
         <main class="dashboard-content">
             <div class="management-page">
                 <div class="header">
                     <h1>Dashboard Direction</h1>
-                    <p>Suivi global de l'évolution des projets</p>
+                    <p>Suivi global de l'Ã©volution des projets</p>
                 </div>
 
                 <div class="stats-grid">
@@ -104,7 +92,7 @@
                         <div class="value progress">{{ project_status_counts.progress }}</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Projets terminés</h3>
+                        <h3>Projets terminÃ©s</h3>
                         <div class="value done">{{ project_status_counts.done }}</div>
                     </div>
                     <div class="stat-card">
@@ -116,7 +104,7 @@
                 <div class="panel">
                     <div class="progress-wrap">
                         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <strong>Taux d'achèvement global</strong>
+                            <strong>Taux d'achÃ¨vement global</strong>
                             <span>{{ progress_ratio }}%</span>
                         </div>
                         <div class="progress-bar">
@@ -124,13 +112,13 @@
                         </div>
                     </div>
 
-                    <h3 style="margin: 14px 0;">Projets récents</h3>
+                    <h3 style="margin: 14px 0;">Projets rÃ©cents</h3>
                     <table class="projects-table">
                         <thead>
                             <tr>
                                 <th>Projet</th>
                                 <th>Manager</th>
-                                <th>Début</th>
+                                <th>DÃ©but</th>
                                 <th>Fin</th>
                                 <th>Statut</th>
                             </tr>
@@ -145,7 +133,7 @@
                                 <td>{{ project.get_status_display }}</td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="5">Aucun projet enregistré.</td></tr>
+                            <tr><td colspan="5">Aucun projet enregistrÃ©.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>

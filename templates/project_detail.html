@@ -1,10 +1,10 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>{{ project.name }} - Détails projet</title>
+    <title>{{ project.name }} - DÃ©tails projet</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <style>
         .project-detail-page {
@@ -72,32 +72,18 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
     </header>
 
     <div class="app-shell">
-        <aside class="sidebar-panel">
-            <div class="sidebar-brand">
-                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="{% url 'dashboard' %}" class="nav-item"><span class="nav-icon">📊</span>Dashboard</a>
-                <a href="{% url 'messaging' %}" class="nav-item"><span class="nav-icon">💬</span>Messages</a>
-                <a href="{% url 'projects_list' %}" class="nav-item active"><span class="nav-icon">📁</span>Projets</a>
-                <a href="{% url 'reports_list' %}" class="nav-item"><span class="nav-icon">📋</span>Rapports</a>
-                {% if is_management %}
-                <a href="{% url 'users_list' %}" class="nav-item"><span class="nav-icon">👥</span>Agents</a>
-                {% endif %}
-                <a href="{% url 'logout' %}" class="nav-item logout"><span class="nav-icon">🚪</span>Déconnexion</a>
-            </nav>
-        </aside>
+        {% include "partials/sidebar.html" %}
 
         <main class="dashboard-content">
             <div class="project-detail-page">
-                <a href="{% url 'projects_list' %}" class="back-link">← Retour aux projets</a>
+                <a href="{% url 'projects_list' %}" class="back-link">â† Retour aux projets</a>
                 <div class="project-detail-card">
                     <h1 style="margin:0 0 8px 0;">{{ project.name }}</h1>
                     <span class="status-badge status-{{ project.status }}">{{ project.get_status_display }}</span>
@@ -108,7 +94,7 @@
                             <div class="meta-value">{{ project.manager.get_full_name|default:project.manager.username }}</div>
                         </div>
                         <div class="meta-item">
-                            <div class="meta-label">Début</div>
+                            <div class="meta-label">DÃ©but</div>
                             <div class="meta-value">{{ project.start_date }}</div>
                         </div>
                         <div class="meta-item">
@@ -120,12 +106,12 @@
                     <h3 style="margin: 0 0 8px 0;">Description</h3>
                     <p style="line-height:1.6; color:#374151;">{{ project.description }}</p>
 
-                    <h3 style="margin: 18px 0 6px 0;">Membres assignés</h3>
+                    <h3 style="margin: 18px 0 6px 0;">Membres assignÃ©s</h3>
                     <div class="members-wrap">
                         {% for member in project.members.all %}
                             <span class="member-chip">{{ member.get_full_name|default:member.username }}</span>
                         {% empty %}
-                            <span style="color:#6b7280;">Aucun membre assigné.</span>
+                            <span style="color:#6b7280;">Aucun membre assignÃ©.</span>
                         {% endfor %}
                     </div>
                 </div>

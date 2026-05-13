@@ -5,7 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from .models import Project
-from .models import AgentTimeEntry
+from .models import AgentTimeEntry, ProjectAssignmentNotification
 
 User = get_user_model()
 
@@ -42,6 +42,25 @@ class ProjectsFeatureTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Project.objects.filter(name='Projet Test').exists())
+        self.assertTrue(ProjectAssignmentNotification.objects.filter(user=self.agent, is_read=False).exists())
+
+    def test_project_assignment_notification_is_marked_read_on_projects_page(self):
+        project = Project.objects.create(
+            name='Projet Notification',
+            description='Description test',
+            start_date='2026-04-01',
+            end_date='2026-04-30',
+            status='pending',
+            manager=self.directeur,
+        )
+        project.members.add(self.agent)
+        ProjectAssignmentNotification.objects.create(user=self.agent, project=project)
+
+        self.client.login(username='agent1', password='testpass123')
+        response = self.client.get(reverse('projects_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(ProjectAssignmentNotification.objects.filter(user=self.agent, is_read=False).exists())
 
     def test_agent_cannot_create_project(self):
         self.client.login(username='agent1', password='testpass123')

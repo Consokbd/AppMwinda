@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -158,7 +158,7 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
@@ -166,47 +166,13 @@
 
     <div class="app-shell">
         <!-- Sidebar navigation -->
-        <aside class="sidebar-panel">
-            <div class="sidebar-brand">
-                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="{% url 'dashboard' %}" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="{% url 'messaging' %}" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    Messages
-                    <span class="notification-badge">2</span>
-                </a>
-                <a href="{% url 'projects_list' %}" class="nav-item">
-                    <span class="nav-icon">📁</span>
-                    Projets
-                    <span class="notification-badge">3</span>
-                </a>
-                <a href="{% url 'reports_list' %}" class="nav-item active">
-                    <span class="nav-icon">📋</span>
-                    Rapports
-                </a>
-                {% if is_management %}
-                <a href="{% url 'users_list' %}" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    Agents
-                </a>
-                {% endif %}
-                <a href="{% url 'logout' %}" class="nav-item logout">
-                    <span class="nav-icon">🚪</span>
-                    Déconnexion
-                </a>
-            </nav>
-        </aside>
+        {% include "partials/sidebar.html" %}
 
         <!-- Main content -->
         <main class="dashboard-content">
             <div class="reports-page">
                 <div class="page-header">
-                    <h1>Rapports d'Activité</h1>
+                    <h1>Rapports d'ActivitÃ©</h1>
                     <p>Suivi des travaux et des productions</p>
                 </div>
 
@@ -230,20 +196,20 @@
                 <!-- FORM SECTION -->
                 {% if can_create_report %}
                 <div class="form-section">
-                    <h3>Créer un nouveau rapport</h3>
+                    <h3>CrÃ©er un nouveau rapport</h3>
                     <form method="POST">
                         {% csrf_token %}
 
-                        <!-- En-tête -->
+                        <!-- En-tÃªte -->
                         <div class="form-grid">
                             <div>
-                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">Département :</label>
+                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">DÃ©partement :</label>
                                 <select name="department">
-                                    <option value="">Sélectionner</option>
+                                    <option value="">SÃ©lectionner</option>
                                     <option value="wood_design">Wood Design</option>
                                     <option value="metal_design">Metal Design</option>
                                     <option value="branding">Branding</option>
-                                    <option value="signalétique">Signalétique</option>
+                                    <option value="signalÃ©tique">SignalÃ©tique</option>
                                 </select>
                             </div>
                             <div>
@@ -255,7 +221,7 @@
                                 <input type="date" name="date" value="{{ default_date|date:'Y-m-d' }}" required>
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">Équipe / Agent :</label>
+                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">Ã‰quipe / Agent :</label>
                                 <input type="text" name="team_agent" value="{{ request.user.get_full_name|default:request.user.username }}">
                             </div>
                         </div>
@@ -266,27 +232,27 @@
                             <div>
                                 <h4>1. CONCEPTION</h4>
                                 <div class="checkbox-group">
-                                    <label><input type="checkbox" name="conception_brief_received"> Brief reçu</label>
-                                    <label><input type="checkbox" name="conception_croquis_validated"> Croquis validé</label>
-                                    <label><input type="checkbox" name="conception_modeling_done"> Modélisation 2D/3D</label>
-                                    <label><input type="checkbox" name="conception_file_ready"> Fichier final prêt</label>
+                                    <label><input type="checkbox" name="conception_brief_received"> Brief reÃ§u</label>
+                                    <label><input type="checkbox" name="conception_croquis_validated"> Croquis validÃ©</label>
+                                    <label><input type="checkbox" name="conception_modeling_done"> ModÃ©lisation 2D/3D</label>
+                                    <label><input type="checkbox" name="conception_file_ready"> Fichier final prÃªt</label>
                                 </div>
                             </div>
 
                             <div>
-                                <h4>2. DÉCOUPE</h4>
+                                <h4>2. DÃ‰COUPE</h4>
                                 <div class="checkbox-group">
-                                    <label><input type="checkbox" name="decoupe_bois_decoupe"> Bois découpé</label>
-                                    <label><input type="checkbox" name="decoupe_metal_decoupe"> Métal découpé</label>
+                                    <label><input type="checkbox" name="decoupe_bois_decoupe"> Bois dÃ©coupÃ©</label>
+                                    <label><input type="checkbox" name="decoupe_metal_decoupe"> MÃ©tal dÃ©coupÃ©</label>
                                     <label><input type="checkbox" name="decoupe_pvc_decoupe"> PVC / Acrylique</label>
-                                    <label><input type="checkbox" name="decoupe_dimensions_verified"> Dimensions vérifiées</label>
+                                    <label><input type="checkbox" name="decoupe_dimensions_verified"> Dimensions vÃ©rifiÃ©es</label>
                                 </div>
                             </div>
 
                             <div>
                                 <h4>3. ASSEMBLAGE</h4>
                                 <div style="margin-bottom: 12px;">
-                                    <label style="display: block; margin-bottom: 6px; font-weight: 600;">Méthode utilisée :</label>
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 600;">MÃ©thode utilisÃ©e :</label>
                                     <select name="assemblage_method">
                                         <option value="">Aucune</option>
                                         <option value="colle">Colle</option>
@@ -298,27 +264,27 @@
                                 <div class="checkbox-group">
                                     <label><input type="checkbox" name="assemblage_partial"> Assemblage partiel</label>
                                     <label><input type="checkbox" name="assemblage_complete"> Assemblage complet</label>
-                                    <label><input type="checkbox" name="assemblage_renforts"> Renforts installés</label>
+                                    <label><input type="checkbox" name="assemblage_renforts"> Renforts installÃ©s</label>
                                 </div>
                             </div>
 
                             <div>
                                 <h4>4. INSTALLATION LED</h4>
                                 <div class="checkbox-group">
-                                    <label><input type="checkbox" name="led_bande_posee"> Bande LED posée</label>
-                                    <label><input type="checkbox" name="led_alimentation_installee"> Alimentation installée</label>
+                                    <label><input type="checkbox" name="led_bande_posee"> Bande LED posÃ©e</label>
+                                    <label><input type="checkbox" name="led_alimentation_installee"> Alimentation installÃ©e</label>
                                     <label><input type="checkbox" name="led_test_allumage"> Test d'allumage</label>
-                                    <label><input type="checkbox" name="led_cablage_secure"> Câblage sécurisé</label>
+                                    <label><input type="checkbox" name="led_cablage_secure"> CÃ¢blage sÃ©curisÃ©</label>
                                 </div>
                             </div>
 
                             <div>
-                                <h4>5. CONTRÔLE QUALITÉ</h4>
+                                <h4>5. CONTRÃ”LE QUALITÃ‰</h4>
                                 <div class="checkbox-group">
                                     <label><input type="checkbox" name="qualite_alignement"> Alignement</label>
-                                    <label><input type="checkbox" name="qualite_solidite"> Solidité</label>
+                                    <label><input type="checkbox" name="qualite_solidite"> SoliditÃ©</label>
                                     <label><input type="checkbox" name="qualite_finitions"> Finitions propres</label>
-                                    <label><input type="checkbox" name="qualite_conformite"> Conformité au design</label>
+                                    <label><input type="checkbox" name="qualite_conformite"> ConformitÃ© au design</label>
                                     <label><input type="checkbox" name="qualite_validation"> Validation finale</label>
                                 </div>
                             </div>
@@ -326,7 +292,7 @@
                             <div>
                                 <h4>6. PEINTURE & FINITION</h4>
                                 <div class="checkbox-group">
-                                    <label><input type="checkbox" name="peinture_poncage"> Ponçage</label>
+                                    <label><input type="checkbox" name="peinture_poncage"> PonÃ§age</label>
                                     <label><input type="checkbox" name="peinture_sous_couche"> Sous-couche</label>
                                     <label><input type="checkbox" name="peinture_peinture"> Peinture</label>
                                     <label><input type="checkbox" name="peinture_vernis"> Vernis / Protection</label>
@@ -341,7 +307,7 @@
                                     <label><input type="checkbox" name="livraison_transport"> Transport</label>
                                     <label><input type="checkbox" name="livraison_installation"> Installation sur site</label>
                                     <label><input type="checkbox" name="livraison_rapport_photo"> Rapport photo</label>
-                                    <label><input type="checkbox" name="livraison_projet_cloture"> Projet clôturé</label>
+                                    <label><input type="checkbox" name="livraison_projet_cloture"> Projet clÃ´turÃ©</label>
                                 </div>
                             </div>
 
@@ -350,18 +316,18 @@
                         <!-- Observations -->
                         <div style="margin-bottom: 16px;">
                             <label style="display: block; margin-bottom: 6px; font-weight: 600;">OBSERVATIONS</label>
-                            <textarea name="observations" rows="3" placeholder="Observations supplémentaires..."></textarea>
+                            <textarea name="observations" rows="3" placeholder="Observations supplÃ©mentaires..."></textarea>
                         </div>
 
                         <details style="margin-bottom: 16px;">
-                            <summary style="cursor: pointer; font-weight: 600; margin-bottom: 12px;">Champs supplémentaires (optionnels)</summary>
+                            <summary style="cursor: pointer; font-weight: 600; margin-bottom: 12px;">Champs supplÃ©mentaires (optionnels)</summary>
                             <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
-                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">Travail effectué :</label>
+                                <label style="display: block; margin-bottom: 6px; font-weight: 600;">Travail effectuÃ© :</label>
                                 <textarea name="work_done" rows="2" placeholder="Description du travail..."></textarea>
-                                <label style="display: block; margin-bottom: 6px; font-weight: 600; margin-top: 12px;">Problèmes rencontrés :</label>
-                                <textarea name="problems" rows="2" placeholder="Décris les problèmes..."></textarea>
+                                <label style="display: block; margin-bottom: 6px; font-weight: 600; margin-top: 12px;">ProblÃ¨mes rencontrÃ©s :</label>
+                                <textarea name="problems" rows="2" placeholder="DÃ©cris les problÃ¨mes..."></textarea>
                                 <label style="display: block; margin-bottom: 6px; font-weight: 600; margin-top: 12px;">Objectifs pour la suite :</label>
-                                <textarea name="objectives" rows="2" placeholder="Objectifs à atteindre..."></textarea>
+                                <textarea name="objectives" rows="2" placeholder="Objectifs Ã  atteindre..."></textarea>
                             </div>
                         </details>
 
@@ -379,22 +345,22 @@
                                 <div class="report-card">
                                     <h4>{{ report.project }} - {{ report.date }}</h4>
                                     <div class="report-meta">
-                                        <span>👤 {{ report.user.username }}</span>
-                                        {% if report.department %}<span>📍 {{ report.get_department_display }}</span>{% endif %}
-                                        {% if report.team_agent %}<span>👥 {{ report.team_agent }}</span>{% endif %}
+                                        <span>ðŸ‘¤ {{ report.user.username }}</span>
+                                        {% if report.department %}<span>ðŸ“ {{ report.get_department_display }}</span>{% endif %}
+                                        {% if report.team_agent %}<span>ðŸ‘¥ {{ report.team_agent }}</span>{% endif %}
                                     </div>
                                     <div class="report-content">
                                         {% if report.conception_brief_received or report.conception_croquis_validated or report.conception_modeling_done or report.conception_file_ready %}
-                                            <p><strong>📐 Conception:</strong> 
-                                            {% if report.conception_brief_received %}✓ Brief reçu {% endif %}
-                                            {% if report.conception_croquis_validated %}✓ Croquis validé {% endif %}
-                                            {% if report.conception_modeling_done %}✓ Modélisation {% endif %}
-                                            {% if report.conception_file_ready %}✓ Fichier prêt{% endif %}
+                                            <p><strong>ðŸ“ Conception:</strong> 
+                                            {% if report.conception_brief_received %}âœ“ Brief reÃ§u {% endif %}
+                                            {% if report.conception_croquis_validated %}âœ“ Croquis validÃ© {% endif %}
+                                            {% if report.conception_modeling_done %}âœ“ ModÃ©lisation {% endif %}
+                                            {% if report.conception_file_ready %}âœ“ Fichier prÃªt{% endif %}
                                             </p>
                                         {% endif %}
 
                                         {% if report.observations %}
-                                            <p><strong>📝 Observations:</strong> {{ report.observations }}</p>
+                                            <p><strong>ðŸ“ Observations:</strong> {{ report.observations }}</p>
                                         {% endif %}
                                     </div>
                                 </div>

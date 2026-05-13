@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,49 +9,15 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
     </header>
 
     <div class="app-shell">
-        <!-- Sidebar à gauche -->
-        <aside class="sidebar-panel">
-            <div class="sidebar-brand">
-                <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="{% url 'dashboard' %}" class="nav-item active">
-                    <span class="nav-icon">📊</span>
-                    Dashboard
-                </a>
-                <a href="{% url 'messaging' %}" class="nav-item">
-                    <span class="nav-icon">💬</span>
-                    Messages
-                    <span class="notification-badge">2</span>
-                </a>
-                <a href="{% url 'projects_list' %}" class="nav-item">
-                    <span class="nav-icon">📁</span>
-                    Projets
-                    <span class="notification-badge">3</span>
-                </a>
-                <a href="{% url 'reports_list' %}" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    Rapports
-                </a>
-                {% if is_admin %}
-                <a href="{% url 'users_list' %}" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    Agents
-                </a>
-                {% endif %}
-                <a href="{% url 'logout' %}" class="nav-item logout">
-                    <span class="nav-icon">🚪</span>
-                    Déconnexion
-                </a>
-            </nav>
-        </aside>
+        <!-- Sidebar Ã  gauche -->
+        {% include "partials/sidebar.html" %}
 
         <!-- Contenu principal du dashboard -->
         <main class="dashboard-content">
@@ -80,7 +46,7 @@
                 <div class="center-column">
                     <!-- Carte projet au centre -->
                     <div class="project-card">
-                        <div class="project-icon project-icon-main">⦿</div>
+                        <div class="project-icon project-icon-main">â¦¿</div>
                         <h2>{{ current_project.title }}</h2>
                         <p>{{ current_project.description }}</p>
                         {% if current_project.status_display %}
@@ -90,13 +56,13 @@
                     </div>
                 </div>
 
-                <!-- Colonne droite : tâches et timer -->
+                <!-- Colonne droite : tÃ¢ches et timer -->
                 <div class="right-column">
-                    <!-- Bloc tâches et timer à droite -->
+                    <!-- Bloc tÃ¢ches et timer Ã  droite -->
                     <div class="tasks-card">
                         <div class="task-card-header">
-                            <div class="task-card-icon">⏱</div>
-                            <h2>TÂCHES DU JOUR</h2>
+                            <div class="task-card-icon">â±</div>
+                            <h2>TÃ‚CHES DU JOUR</h2>
                         </div>
                         <div class="task-list">
                             {% for task in tasks %}
@@ -125,8 +91,6 @@
 
     <script>
         // Initialize notification badges from Django context
-        localStorage.setItem('unread_messages_count', '{{ unread_messages_count }}');
-        localStorage.setItem('new_project_assignments', '{{ new_project_assignments }}');
         window.dashboardTimerConfig = {
             startTaskUrl: "{% url 'start_task_timer' %}",
             completeTaskUrl: "{% url 'complete_task_timer' %}",

@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Project
-from .models import AgentTimeEntry
+from .models import AgentTimeEntry, ProjectAssignmentNotification
 from reports.models import DailyReport
 from messaging.models import Message
 from django.contrib.auth import get_user_model
@@ -302,9 +302,20 @@ def projects_list(request):
         if member_ids:
             members = User.objects.filter(id__in=member_ids)
             project.members.set(members)
+            for member in members:
+                if member.id != request.user.id:
+                    ProjectAssignmentNotification.objects.get_or_create(
+                        user=member,
+                        project=project,
+                    )
 
         messages.success(request, "Projet créé avec succès.")
         return redirect('projects_list')
+
+    ProjectAssignmentNotification.objects.filter(
+        user=request.user,
+        is_read=False,
+    ).update(is_read=True)
 
     context = {
         'projects': projects,

@@ -1,0 +1,36 @@
+{% load static %}
+<aside class="sidebar-panel">
+    <div class="sidebar-brand">
+        <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda" class="sidebar-logo">
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <span class="nav-icon"><img src="{% static 'images/icone_home.png' %}" alt=""></span>
+            Accueil
+        </a>
+        <a href="{% url 'messaging' %}" class="nav-item {% if request.resolver_match.url_name == 'messaging' %}active{% endif %}">
+            <span class="nav-icon"><img src="{% static 'images/icone_message.png' %}" alt=""></span>
+            Messages
+            <span class="notification-badge {% if unread_messages_count %}visible{% endif %}">{{ unread_messages_count }}</span>
+        </a>
+        <a href="{% url 'projects_list' %}" class="nav-item {% if request.resolver_match.url_name == 'projects_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
+            <span class="nav-icon"><img src="{% static 'images/icone_projet.png' %}" alt=""></span>
+            Projets
+            <span class="notification-badge {% if unread_project_assignments %}visible{% endif %}">{{ unread_project_assignments }}</span>
+        </a>
+        <a href="{% url 'reports_list' %}" class="nav-item {% if request.resolver_match.url_name == 'reports_list' %}active{% endif %}">
+            <span class="nav-icon"><img src="{% static 'images/icone_rapport.png' %}" alt=""></span>
+            Rapports
+        </a>
+        {% if is_management or is_admin %}
+        <a href="{% url 'users_list' %}" class="nav-item {% if request.resolver_match.url_name == 'users_list' %}active{% endif %}">
+            <span class="nav-icon nav-icon-text">AG</span>
+            Agents
+        </a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="nav-item logout">
+            <span class="nav-icon"><img src="{% static 'images/icone_quitte.png' %}" alt=""></span>
+            Déconnexion
+        </a>
+    </nav>
+</aside>

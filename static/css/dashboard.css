@@ -952,3 +952,254 @@ width:400px;
         margin-bottom: 15px;
     }
 }
+
+/* ------------------------------
+   Thème sombre AppMwinda
+   ------------------------------ */
+:root {
+    --app-bg: #050505;
+    --app-panel: #111111;
+    --app-panel-soft: #181818;
+    --app-border: #2b2b2b;
+    --app-text: #f8fafc;
+    --app-muted: #a1a1aa;
+    --app-yellow: #fde047;
+}
+
+body {
+    background: var(--app-bg);
+    color: var(--app-text);
+}
+
+.app-header {
+    background: #050505;
+    border-bottom: 1px solid var(--app-border);
+    box-shadow: none;
+}
+
+.menu-toggle {
+    color: var(--app-text);
+}
+
+.app-shell,
+.dashboard-content,
+.projects-page,
+.messaging-container {
+    background: var(--app-bg) !important;
+}
+
+.sidebar-panel {
+    background: #080808;
+    border-right: 1px solid var(--app-border);
+}
+
+.sidebar-brand {
+    color: var(--app-text);
+}
+
+.sidebar-logo,
+.logo-image {
+    filter: invert(1);
+}
+
+.sidebar-nav .nav-item {
+    color: var(--app-text);
+    border: 1px solid transparent;
+}
+
+.sidebar-nav .nav-item:hover {
+    background: #171717;
+    border-color: var(--app-border);
+}
+
+.sidebar-nav .nav-item.active {
+    background: var(--app-yellow);
+    color: #111827;
+}
+
+.sidebar-nav .nav-item.logout {
+    background: #171717;
+    color: var(--app-text);
+}
+
+.sidebar-nav .nav-item.logout:hover {
+    background: #262626;
+}
+
+.sidebar-nav .nav-item .nav-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 28px;
+}
+
+.sidebar-nav .nav-item .nav-icon img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    filter: invert(1);
+}
+
+.sidebar-nav .nav-item.active .nav-icon img {
+    filter: none;
+}
+
+.nav-icon-text {
+    border-radius: 9px;
+    background: #262626;
+    color: var(--app-yellow);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.sidebar-nav .nav-item.active .nav-icon-text {
+    background: #111827;
+    color: var(--app-yellow);
+}
+
+.notification-badge {
+    display: none;
+    top: 8px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    line-height: 22px;
+    border: 2px solid #080808;
+}
+
+.notification-badge.visible {
+    display: flex;
+}
+
+.project-card,
+.task-card,
+.tasks-card,
+.timer-card,
+.left-column,
+.users-table,
+.create-form,
+.filter-section,
+.project-item,
+.messages-section,
+.messaging-sidebar,
+.chat-area,
+.admin-page,
+.admin-form,
+.card,
+.table-section,
+.chart-container,
+#createForm {
+    background: var(--app-panel) !important;
+    color: var(--app-text) !important;
+    border: 1px solid var(--app-border) !important;
+    box-shadow: none !important;
+}
+
+.project-card {
+    background: var(--app-panel-soft) !important;
+}
+
+.tasks-card,
+.task-card {
+    background: #161616 !important;
+}
+
+.profile-info h1,
+.project-card h2,
+.task-card h2,
+.tasks-card h2,
+.page-header h1,
+.project-title,
+.filter-section label,
+.users-table th,
+.users-table td,
+.user-info-text h3,
+.messaging-sidebar-header h2,
+.user-info h3,
+.chat-header h3,
+.admin-page h2,
+.admin-table td,
+.admin-table th {
+    color: var(--app-text) !important;
+}
+
+.profile-info p,
+.project-card p,
+.progress-label,
+.page-header p,
+.project-desc,
+.project-meta,
+.user-info p,
+.message-time,
+.empty-state,
+.admin-empty-state,
+.admin-form-group label {
+    color: var(--app-muted) !important;
+}
+
+.progress-circle::before,
+.project-icon-main,
+.task-card-icon {
+    background: #050505;
+}
+
+.task-item,
+.timer-row,
+.message.received .message-bubble,
+.input-wrapper,
+.search-box input,
+.user-item,
+.admin-table thead,
+table th {
+    background: #1f1f1f !important;
+    color: var(--app-text) !important;
+    border-color: var(--app-border) !important;
+}
+
+.task-item.next {
+    background: rgba(253, 224, 71, 0.12) !important;
+    border-color: rgba(253, 224, 71, 0.45) !important;
+}
+
+.task-item.completed {
+    background: #121212 !important;
+    color: #71717a !important;
+}
+
+input,
+select,
+textarea {
+    background: #0b0b0b !important;
+    color: var(--app-text) !important;
+    border-color: var(--app-border) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #71717a !important;
+}
+
+.btn-small,
+.btn-cancel,
+.admin-btn-secondary {
+    background: #1f1f1f !important;
+    color: var(--app-text) !important;
+    border-color: var(--app-border) !important;
+}
+
+.btn-open,
+.create-project-btn,
+.btn-submit,
+.send-btn,
+.admin-btn-primary {
+    background: var(--app-yellow) !important;
+    color: #111827 !important;
+}
+
+.message.sent .message-bubble {
+    background: var(--app-yellow) !important;
+    color: #111827 !important;
+}

@@ -30,9 +30,9 @@ function parseTimerValue(value) {
 
 function updateNotificationBadges() {
     const messageBadge = document.querySelector('a[href*="messaging"] .notification-badge');
-    const projectBadge = document.querySelector('a[href*="projects_list"] .notification-badge');
-    const unreadMessages = parseInt(localStorage.getItem("unread_messages_count") || "0", 10);
-    const newProjectAssignments = parseInt(localStorage.getItem("new_project_assignments") || "0", 10);
+    const projectBadge = document.querySelector('a[href*="projects"] .notification-badge');
+    const unreadMessages = parseInt(messageBadge?.textContent || "0", 10);
+    const newProjectAssignments = parseInt(projectBadge?.textContent || "0", 10);
 
     if (messageBadge) {
         if (unreadMessages > 0) {
