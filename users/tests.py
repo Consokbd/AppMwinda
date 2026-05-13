@@ -23,3 +23,23 @@ class UsersDirectoryTests(TestCase):
         self.client.login(username='alice', password='testpass123')
         response = self.client.get(reverse('users_list'))
         self.assertEqual(response.status_code, 200)
+
+    def test_admin_can_create_user_from_users_directory(self):
+        self.client.login(username='alice', password='testpass123')
+
+        response = self.client.post(reverse('users_list'), {
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'first_name': 'Bob',
+            'last_name': 'Mwinda',
+            'password': 'secret123',
+            'role': 'agent',
+            'direction': 'design',
+        })
+
+        self.assertRedirects(response, reverse('users_list'))
+        created_user = User.objects.get(username='bob')
+        self.assertEqual(created_user.email, 'bob@example.com')
+        self.assertEqual(created_user.role, 'agent')
+        self.assertEqual(created_user.direction, 'design')
+        self.assertTrue(created_user.check_password('secret123'))

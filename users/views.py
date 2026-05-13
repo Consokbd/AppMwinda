@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
 from projects.models import AgentTimeEntry
@@ -68,6 +69,60 @@ def logout_view(request):
 @login_required(login_url='login')
 def users_directory(request):
     is_management = request.user.is_superuser or request.user.role in ['admin', 'directeur']
+    is_admin = request.user.is_superuser or request.user.role == 'admin'
+
+    if request.method == 'POST':
+        if not is_admin:
+            messages.error(request, "Vous n'avez pas la permission de créer un utilisateur.")
+            return redirect('users_list')
+
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        password = request.POST.get('password', '')
+        role = request.POST.get('role', 'agent').strip() or 'agent'
+        direction = request.POST.get('direction', 'design').strip() or 'design'
+
+        errors = []
+        if not username:
+            errors.append("Le nom d'utilisateur est requis.")
+        elif User.objects.filter(username=username).exists():
+            errors.append("Ce nom d'utilisateur existe déjà.")
+
+        if not email:
+            errors.append("L'email est requis.")
+        elif User.objects.filter(email=email).exists():
+            errors.append("Cet email existe déjà.")
+
+        valid_roles = [value for value, _ in User.ROLE_CHOICES]
+        valid_directions = [value for value, _ in User.DIRECTION_CHOICES]
+        if role not in valid_roles:
+            errors.append("Le rôle sélectionné est invalide.")
+        if direction not in valid_directions:
+            errors.append("La direction sélectionnée est invalide.")
+        if not password:
+            errors.append("Le mot de passe est requis.")
+        elif len(password) < 6:
+            errors.append("Le mot de passe doit contenir au moins 6 caractères.")
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect('users_list')
+
+        User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            role=role,
+            direction=direction,
+        )
+        messages.success(request, "Utilisateur créé avec succès.")
+        return redirect('users_list')
+
     users = User.objects.filter(role='agent').order_by('username') if is_management else User.objects.all().order_by('username')
 
     query = request.GET.get('q', '').strip()
@@ -147,7 +202,7 @@ def users_directory(request):
         'current_project': current_project,
         'tasks': tasks,
         'time_stats': time_stats,
-        'is_admin': request.user.is_superuser or request.user.role == 'admin',
+        'is_admin': is_admin,
         'is_management': is_management,
     }
     return render(request, 'users.html', context)
