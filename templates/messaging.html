@@ -62,7 +62,7 @@
         }
 
         .search-box::before {
-            content: "ðŸ”";
+            content: "🔍";
             position: absolute;
             left: 12px;
             top: 50%;
@@ -411,7 +411,7 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
@@ -455,13 +455,13 @@
                 <div class="chat-area">
                     <div class="chat-header">
                         <div class="chat-header-info">
-                            <h3 id="chatTitle">SÃ©lectionnez une conversation</h3>
+                            <h3 id="chatTitle">Sélectionnez une conversation</h3>
                         </div>
                     </div>
 
                     <div class="messages-container" id="messagesContainer">
                         <div class="empty-state">
-                            ðŸ‘‹ SÃ©lectionnez une personne pour commencer une conversation
+                            👋 Sélectionnez une personne pour commencer une conversation
                         </div>
                     </div>
 
@@ -471,12 +471,12 @@
                             <textarea 
                                 id="messageInput" 
                                 name="content" 
-                                placeholder="Ã‰crire un message..." 
+                                placeholder="Écrire un message..." 
                                 rows="1"
                                 onkeydown="handleKeyPress(event)"
                             ></textarea>
                         </div>
-                        <button type="submit" class="send-btn">âž¤</button>
+                        <button type="submit" class="send-btn">➤</button>
                     </form>
                 </div>
             </div>
@@ -538,7 +538,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.messages.length === 0) {
-                        container.innerHTML = '<div class="empty-state">Aucun message pour l\'instant. Commencez la conversation! ðŸ’¬</div>';
+                        container.innerHTML = '<div class="empty-state">Aucun message pour l\'instant. Commencez la conversation! 💬</div>';
                         return;
                     }
                     
@@ -574,7 +574,7 @@
         function sendMessage(event) {
             event.preventDefault();
             if (!selectedUserId) {
-                alert('Veuillez d\'abord sÃ©lectionner un utilisateur');
+                alert('Veuillez d\'abord sélectionner un utilisateur');
                 return;
             }
 

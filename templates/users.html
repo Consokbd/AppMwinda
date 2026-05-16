@@ -286,7 +286,7 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
         <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" style="height: 32px; width: auto;">
     </header>
 
@@ -298,7 +298,7 @@
                 <div class="section-header">
                     <h2>Gestion des Agents</h2>
                     {% if is_admin %}
-                        <button class="btn-create" id="toggleCreateForm">+ CrÃ©er un agent</button>
+                        <button class="btn-create" id="toggleCreateForm">+ Créer un agent</button>
                     {% endif %}
                 </div>
 
@@ -314,7 +314,7 @@
                     {% endif %}
 
                     <div class="create-form" id="createUserForm">
-                        <h3 style="margin-top: 0; color: #111827;">CrÃ©er un nouvel utilisateur</h3>
+                        <h3 style="margin-top: 0; color: #111827;">Créer un nouvel utilisateur</h3>
                         <form method="POST">
                             {% csrf_token %}
                             <div class="form-row">
@@ -329,7 +329,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>PrÃ©nom</label>
+                                    <label>Prénom</label>
                                     <input type="text" name="first_name" placeholder="ex: Jean">
                                 </div>
                                 <div class="form-group">
@@ -340,10 +340,10 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Mot de passe</label>
-                                    <input type="password" name="password" required placeholder="Mot de passe sÃ©curisÃ©">
+                                    <input type="password" name="password" required placeholder="Mot de passe sécurisé">
                                 </div>
                                 <div class="form-group">
-                                    <label>RÃ´le</label>
+                                    <label>Rôle</label>
                                     <select name="role" required>
                                         {% for value, label in role_choices %}
                                             <option value="{{ value }}" {% if value == 'agent' %}selected{% endif %}>{{ label }}</option>
@@ -363,7 +363,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="btn-cancel" onclick="toggleCreateForm()">Annuler</button>
-                                <button type="submit" class="btn-submit">CrÃ©er l'utilisateur</button>
+                                <button type="submit" class="btn-submit">Créer l'utilisateur</button>
                             </div>
                         </form>
                     </div>
@@ -377,10 +377,10 @@
                                     <tr>
                                         <th>Agent</th>
                                         <th>Email</th>
-                                        <th>RÃ´le</th>
+                                        <th>Rôle</th>
                                         <th>Statut</th>
                                         <th>Performance</th>
-                                        <th>T. exÃ©cution tÃ¢ches</th>
+                                        <th>T. exécution tâches</th>
                                         <th>Temps travail</th>
                                         <th>Temps pause</th>
                                         {% if is_admin %}<th>Actions</th>{% endif %}
@@ -418,7 +418,7 @@
                                                 <td>
                                                     <div class="action-buttons">
                                                         <button class="btn-sm btn-edit">Modifier</button>
-                                                        <button class="btn-sm btn-delete" onclick="if(confirm('ÃŠtes-vous sÃ»r?')) { window.location.href='#'; }">Supprimer</button>
+                                                        <button class="btn-sm btn-delete" onclick="if(confirm('Êtes-vous sûr?')) { window.location.href='#'; }">Supprimer</button>
                                                     </div>
                                                 </td>
                                             {% endif %}
@@ -429,7 +429,7 @@
                         </div>
                     {% else %}
                         <div class="empty-state">
-                            <p>Aucun utilisateur trouvÃ©</p>
+                            <p>Aucun utilisateur trouvé</p>
                         </div>
                     {% endif %}
                 </div>

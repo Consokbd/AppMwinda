@@ -9,14 +9,14 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
     </header>
 
     <div class="app-shell">
-        <!-- Sidebar Ã  gauche -->
+        <!-- Sidebar a gauche -->
         {% include "partials/sidebar.html" %}
 
         <!-- Contenu principal du dashboard -->
@@ -38,7 +38,7 @@
                             <div class="progress-circle" style="--progress:0;"></div>
                             <div class="progress-value">{{ profile_progress }}%</div>
                         </div>
-                        <p class="progress-label">Evolution du projet en cours</p>
+                        <p class="progress-label">Évolution du projet en cours</p>
                     </div>
                 </div>
 
@@ -46,7 +46,9 @@
                 <div class="center-column">
                     <!-- Carte projet au centre -->
                     <div class="project-card">
-                        <div class="project-icon project-icon-main">â¦¿</div>
+                        <div class="project-icon project-icon-main">
+                            <img src="{% static 'images/icone_projet.png' %}" alt="">
+                        </div>
                         <h2>{{ current_project.title }}</h2>
                         <p>{{ current_project.description }}</p>
                         {% if current_project.status_display %}
@@ -56,13 +58,15 @@
                     </div>
                 </div>
 
-                <!-- Colonne droite : tÃ¢ches et timer -->
+                <!-- Colonne droite : taches et timer -->
                 <div class="right-column">
-                    <!-- Bloc tÃ¢ches et timer Ã  droite -->
+                    <!-- Bloc taches et timer a droite -->
                     <div class="tasks-card">
                         <div class="task-card-header">
-                            <div class="task-card-icon">â±</div>
-                            <h2>TÃ‚CHES DU JOUR</h2>
+                            <div class="task-card-icon">
+                                <img src="{% static 'images/icone_rapport.png' %}" alt="">
+                            </div>
+                            <h2>TÂCHES DU JOUR</h2>
                         </div>
                         <div class="task-list">
                             {% for task in tasks %}

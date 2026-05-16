@@ -66,7 +66,7 @@
 </head>
 <body>
     <header class="app-header">
-        <button class="menu-toggle" aria-label="Ouvrir le menu">â˜°</button>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
         <div class="brand-mark">
             <img src="{% static 'images/logo_agence_noir.png' %}" alt="AppMwinda Logo" class="logo-image">
         </div>
@@ -79,7 +79,7 @@
             <div class="management-page">
                 <div class="header">
                     <h1>Dashboard Direction</h1>
-                    <p>Suivi global de l'Ã©volution des projets</p>
+                    <p>Suivi global de l'évolution des projets</p>
                 </div>
 
                 <div class="stats-grid">
@@ -92,7 +92,7 @@
                         <div class="value progress">{{ project_status_counts.progress }}</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Projets terminÃ©s</h3>
+                        <h3>Projets terminés</h3>
                         <div class="value done">{{ project_status_counts.done }}</div>
                     </div>
                     <div class="stat-card">
@@ -104,7 +104,7 @@
                 <div class="panel">
                     <div class="progress-wrap">
                         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <strong>Taux d'achÃ¨vement global</strong>
+                            <strong>Taux d'achèvement global</strong>
                             <span>{{ progress_ratio }}%</span>
                         </div>
                         <div class="progress-bar">
@@ -112,13 +112,13 @@
                         </div>
                     </div>
 
-                    <h3 style="margin: 14px 0;">Projets rÃ©cents</h3>
+                    <h3 style="margin: 14px 0;">Projets récents</h3>
                     <table class="projects-table">
                         <thead>
                             <tr>
                                 <th>Projet</th>
                                 <th>Manager</th>
-                                <th>DÃ©but</th>
+                                <th>Début</th>
                                 <th>Fin</th>
                                 <th>Statut</th>
                             </tr>
@@ -133,7 +133,7 @@
                                 <td>{{ project.get_status_display }}</td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="5">Aucun projet enregistrÃ©.</td></tr>
+                            <tr><td colspan="5">Aucun projet enregistré.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
